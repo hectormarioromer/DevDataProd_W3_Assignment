@@ -1,0 +1,48 @@
+---
+title: "R Markdown with Plotly"
+author: "Hector Mario Romer"
+date: "2/26/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(plotly)
+library(readr)
+```
+
+## Overview
+
+Create a web page presentation using R Markdown that features a plot created with Plotly. Host your webpage on either GitHub Pages, RPubs, or NeoCities. Your webpage must contain the date that you created the document, and it must contain a plot created with Plotly.
+
+I will use a file with tourism data downloaded from the United Nations data repository. The plot will show top 10 countries in tourism expenditure in millions of dollars for the year 2019. For the purposes of simplicity, we are going to assume that the data files exists in the working directory.
+
+## Loading data
+
+```{r Loading Data}
+tourism <- read_csv("tourism.csv", skip = 1, col_types = "fffffcncf",
+                    na = c("", "NA"), show_col_types = FALSE)
+
+info <- tourism %>% filter(year == 2019, 
+                series == "Tourism expenditure (millions of US dollars)") %>%
+                select(name, value) %>%
+                mutate(name = iconv(name, to = "utf-8")) %>%
+                slice_max(value, n = 10)
+```
+
+
+## Generating plot
+
+Information is plotted using vertical bars along x axis. Values are shown in y axis.
+
+```{r Plotly, fig.width=10}
+plot <- plot_ly(info, x = ~as.character(name), y = ~value, type = "bar") %>%
+                layout(title = "Tourism expenditure", 
+                        xaxis = list(title = "Country", 
+                                     categoryorder = "total descending"), 
+                        yaxis = list(title = "Millions of US dollars")) %>%
+                 config(displayModeBar = FALSE)
+plot
+```
+
