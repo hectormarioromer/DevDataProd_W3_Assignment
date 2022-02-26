@@ -2,11 +2,11 @@
 title: "R Markdown with Plotly"
 author: "Hector Mario Romer"
 date: "2/26/2022"
-output: html_document
+output: ioslides_presentation
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 library(dplyr)
 library(plotly)
 library(readr)
@@ -18,7 +18,6 @@ Create a web page presentation using R Markdown that features a plot created wit
 
 I will use a file with tourism data downloaded from the United Nations data repository. The plot will show top 10 countries in tourism expenditure in millions of dollars for the year 2019. For the purposes of simplicity, we are going to assume that the data files exists in the working directory.
 
-## Loading data
 
 ```{r Loading Data}
 tourism <- read_csv("tourism.csv", skip = 1, col_types = "fffffcncf",
@@ -36,13 +35,12 @@ info <- tourism %>% filter(year == 2019,
 
 Information is plotted using vertical bars along x axis. Values are shown in y axis.
 
-```{r Plotly, fig.width=10}
+```{r Plotly, fig.width=7}
 plot <- plot_ly(info, x = ~as.character(name), y = ~value, type = "bar") %>%
                 layout(title = "Tourism expenditure", 
                         xaxis = list(title = "Country", 
                                      categoryorder = "total descending"), 
-                        yaxis = list(title = "Millions of US dollars")) %>%
-                 config(displayModeBar = FALSE)
+                        yaxis = list(title = "Millions of US dollars"))
 plot
 ```
 
